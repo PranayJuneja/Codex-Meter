@@ -33,13 +33,16 @@ jobs:
           yes | "$SDKMANAGER" --licenses >/dev/null || true
           "$SDKMANAGER" "platforms;android-36" "build-tools;36.0.0"
 
-      - name: Extract source archive
+      - name: Reassemble and extract source archive
         shell: bash
         run: |
           set -euo pipefail
+          cat ci/source-parts/part-* > CodexMeter-source-1.7.0.zip
+          echo "d9ef7a131b6ef0b4763b94d39e5199c36171ccb81d6d0855ff4c805aaea3474c  CodexMeter-source-1.7.0.zip" | sha256sum -c -
           rm -rf work
           mkdir -p work
           unzip -q CodexMeter-source-1.7.0.zip -d work
+          chmod +x work/CodexMeter-1.7.0/*.sh
           test -x work/CodexMeter-1.7.0/build-ci.sh
 
       - name: Run regression tests
@@ -54,6 +57,7 @@ jobs:
         run: |
           set -euo pipefail
           cd work/CodexMeter-1.7.0
+          mkdir -p dist-ci
           ./build-ci.sh 2>&1 | tee dist-ci/build.log
 
       - name: Upload unsigned APK and signing tool
