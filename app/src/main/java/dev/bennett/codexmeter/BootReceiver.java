@@ -15,6 +15,7 @@ public final class BootReceiver extends BroadcastReceiver {
             ResetAlertScheduler.scheduleFromSnapshot(context, AppPreferences.loadSnapshot(context));
             ResetCreditExpiryScheduler.scheduleFromSnapshot(context,
                     AppPreferences.loadResetCredits(context));
+            NowBarManager.restore(context);
             if ("android.intent.action.MY_PACKAGE_REPLACED".equals(action)) {
                 WidgetUpgradeRepair.afterPackageReplaced(context);
             } else {
